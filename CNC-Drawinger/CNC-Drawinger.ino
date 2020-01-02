@@ -15,6 +15,7 @@ const int penZDown = 115;
 
 // Servo on PWM pin 10
 const int penServoPin =10 ;
+const int laserPin=2;
 
 // Should be right for DVD steppers, but is not too important here
 const int stepsPerRevolution = 48; 
@@ -38,15 +39,15 @@ struct point actuatorPos;
 
 //  Drawing settings, should be OK
 float StepInc = 1;
-int StepDelay = 0;
+int StepDelay = 10;//defualt 0
 int LineDelay =0;
 int penDelay = 50;
 
 // Motor steps to go 1 millimeter.
 // Use test sketch to go 100 steps. Measure the length of line. 
 // Calculate steps per mm. Enter here.
-float StepsPerMillimeterX = 100.0;
-float StepsPerMillimeterY = 100.0;
+float StepsPerMillimeterX = 80.0;//defualt 100
+float StepsPerMillimeterY = 80.0;//defualt 100
 
 // Drawing robot limits, in mm
 // OK to start with. Could go up to 50 mm if calibrated well. 
@@ -82,12 +83,14 @@ void setup() {
   
   penServo.attach(penServoPin);
   penServo.write(penZUp);
+  pinMode(laserPin, OUTPUT);
+  digitalWrite(laserPin,LOW);
   delay(100);
 
   // Decrease if necessary
-  myStepperX.setSpeed(600);
+  myStepperX.setSpeed(600);//defualt 600
 
-  myStepperY.setSpeed(600);  
+  myStepperY.setSpeed(600);//defualt 600
   
 
   //  Set & move to initial default position
@@ -385,6 +388,7 @@ void drawLine(float x1, float y1) {
 
 //  Raises pen
 void penUp() { 
+  digitalWrite(laserPin, LOW);
   penServo.write(penZUp); 
   delay(penDelay); 
   Zpos=Zmax; 
@@ -397,6 +401,7 @@ void penUp() {
 }
 //  Lowers pen
 void penDown() { 
+  digitalWrite(laserPin, HIGH);
   penServo.write(penZDown); 
   delay(penDelay); 
   Zpos=Zmin; 
